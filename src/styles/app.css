@@ -1,0 +1,200 @@
+/* PulseConnect Design System
+   Dark-first aesthetic with Electric Violet + Cyan Pulse
+   Based on design-tokens.css by the Designer team
+*/
+@import "tailwindcss";
+
+/* ── Tailwind v4 Theme Preset ── */
+@theme {
+  /* Primary palette */
+  --color-primary: #7C3AED;
+  --color-primary-hover: #6D28D9;
+  --color-primary-light: #a78bfa;
+  --color-primary-dark: #5B21B6;
+  
+  /* Accent palette */
+  --color-accent: #06B6D4;
+  --color-accent-hover: #0891B2;
+  --color-accent-light: #67e8f9;
+  
+  /* Surface / Background */
+  --color-surface: #13131f;
+  --color-surface-elevated: #1e1e2e;
+  --color-surface-hover: #252538;
+  --color-bg-dark: #0a0a0f;
+  
+  /* Text */
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-bright: #f1f5f9;
+  
+  /* Semantic */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  
+  /* Borders */
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.1);
+  --color-border-accent: rgba(124, 58, 237, 0.3);
+  
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+@layer base {
+  html, body {
+    @apply bg-bg-dark text-text-primary antialiased;
+    font-family: var(--font-sans);
+  }
+
+  /* Light mode (secondary) */
+  .light, [data-theme="light"] {
+    --tw-bg-opacity: 1;
+    background-color: #f8fafc;
+    color: #1e293b;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a0f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e1e2e;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #252538;
+  }
+}
+
+/* ── Button Presets ── */
+.btn-gradient {
+  background: linear-gradient(135deg, #7C3AED, #06B6D4);
+  color: white;
+  transition: all 250ms ease;
+}
+.btn-gradient:hover {
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  opacity: 0.95;
+}
+
+.btn-secondary {
+  background: rgba(124, 58, 237, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  transition: all 250ms ease;
+}
+.btn-secondary:hover {
+  background: rgba(124, 58, 237, 0.25);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 250ms ease;
+}
+.btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+/* ── Surface Cards ── */
+.card-surface {
+  background: #13131f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+.card-elevated {
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+.card-border-accent {
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+/* ── Glass Effect ── */
+.glass {
+  background: rgba(19, 19, 31, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Text Presets ── */
+.text-gradient {
+  background: linear-gradient(135deg, #7C3AED, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Input Fields ── */
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.input-field:focus {
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+.input-field::placeholder {
+  color: #64748b;
+}
+
+/* ── Pill/Tag Presets ── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.pill-violet {
+  background: rgba(124, 58, 237, 0.15);
+  color: #a78bfa;
+}
+.pill-cyan {
+  background: rgba(6, 182, 212, 0.15);
+  color: #67e8f9;
+}
+.pill-amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.pill-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+}
+
+/* ── Glow Effects ── */
+.glow-violet {
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+}
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+/* ── Divider ── */
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
