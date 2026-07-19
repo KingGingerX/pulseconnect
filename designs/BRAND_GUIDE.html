@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulseConnect Brand Design System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; line-height: 1.6; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+  
+  /* Header */
+  .header { background: linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 50%, #0a1628 100%); padding: 4rem 0; border-bottom: 1px solid rgba(124,58,237,0.2); }
+  .header h1 { font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #7C3AED, #06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+  .header .subtitle { font-size: 1.2rem; color: #94a3b8; margin-top: 0.5rem; }
+  .header .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; background: rgba(124,58,237,0.15); color: #a78bfa; font-size: 0.8rem; font-weight: 500; margin-top: 1rem; border: 1px solid rgba(124,58,237,0.3); }
+  
+  /* Sections */
+  .section { margin: 3rem 0; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); }
+  .section h2 { font-size: 1.8rem; font-weight: 700; color: #f1f5f9; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(124,58,237,0.3); }
+  .section h3 { font-size: 1.3rem; font-weight: 600; color: #a78bfa; margin: 1.5rem 0 1rem; }
+  .section h4 { font-size: 1rem; font-weight: 600; color: #cbd5e1; margin: 1rem 0 0.5rem; }
+  
+  /* Color swatches */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .swatch { border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+  .swatch-color { height: 120px; display: flex; align-items: flex-end; padding: 0.75rem; }
+  .swatch-color .label { background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: white; }
+  .swatch-info { padding: 0.75rem; background: rgba(255,255,255,0.04); }
+  .swatch-info .name { font-weight: 600; font-size: 0.9rem; }
+  .swatch-info .hex { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #94a3b8; margin-top: 0.25rem; }
+  .swatch-info .usage { font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; }
+
+  /* Typography */
+  .font-sample { margin: 1rem 0; }
+  .font-sample .sample-h1 { font-size: 2.5rem; font-weight: 800; }
+  .font-sample .sample-h2 { font-size: 2rem; font-weight: 700; }
+  .font-sample .sample-h3 { font-size: 1.5rem; font-weight: 600; }
+  .font-sample .sample-body { font-size: 1rem; font-weight: 400; }
+  .font-sample .sample-small { font-size: 0.8rem; font-weight: 400; color: #94a3b8; }
+  .font-sample .label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; }
+  .font-meta { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 1rem; margin: 0.5rem 0; }
+  .font-meta code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #a78bfa; }
+
+  /* UI Elements */
+  .ui-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+  .ui-card { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.06); }
+  .ui-card .title { font-weight: 600; margin-bottom: 0.5rem; color: #e2e8f0; }
+  
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-primary { background: linear-gradient(135deg, #7C3AED, #06B6D4); color: white; }
+  .btn-secondary { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+  .btn-ghost { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); }
+  .btn-cta { background: linear-gradient(135deg, #7C3AED, #06B6D4); color: white; padding: 1rem 2rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(124,58,237,0.3); }
+
+  .input-field { display: block; width: 100%; padding: 0.75rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e2e8f0; font-size: 0.9rem; font-family: 'Inter', sans-serif; transition: border-color 0.2s; }
+  .input-field:focus { outline: none; border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+
+  .pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
+  .pill-purple { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .pill-cyan { background: rgba(6,182,212,0.15); color: #67e8f9; }
+  .pill-amber { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+  .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #7C3AED, #06B6D4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; color: white; }
+  .avatar-sm { width: 36px; height: 36px; font-size: 0.9rem; }
+  .avatar-lg { width: 72px; height: 72px; font-size: 1.8rem; }
+
+  /* Logo preview */
+  .logo-preview { display: flex; align-items: center; gap: 2rem; padding: 2rem; background: rgba(255,255,255,0.04); border-radius: 12px; flex-wrap: wrap; }
+  .logo-preview img { max-height: 80px; border-radius: 8px; }
+
+  /* Mockup grid */
+  .mockup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .mockup-card { background: rgba(255,255,255,0.04); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+  .mockup-card img { width: 100%; display: block; }
+  .mockup-card .mockup-label { padding: 0.75rem 1rem; font-weight: 500; font-size: 0.9rem; background: rgba(0,0,0,0.3); }
+
+  hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 2rem 0; }
+
+  .tier-card { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.06); }
+  .tier-card.featured { border-color: rgba(124,58,237,0.4); background: rgba(124,58,237,0.06); }
+  .tier-card .price { font-size: 2rem; font-weight: 800; color: #f1f5f9; }
+  .tier-card .price-note { font-size: 0.85rem; color: #64748b; }
+  .tier-card ul { list-style: none; margin: 1rem 0; }
+  .tier-card ul li { padding: 0.4rem 0; font-size: 0.9rem; color: #94a3b8; }
+  .tier-card ul li::before { content: "✓ "; color: #06B6D4; font-weight: 700; }
+
+  .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+  .theme-swatch { border-radius: 12px; padding: 1.5rem 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.08); }
+  .theme-swatch .emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .theme-swatch .tname { font-size: 0.85rem; font-weight: 500; }
+  .theme-swatch .tdesc { font-size: 0.7rem; color: #64748b; margin-top: 0.2rem; }
+
+  footer { text-align: center; padding: 3rem 0; color: #64748b; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 3rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <span class="badge">v1.0 · TGB Global Systems LLC</span>
+    <h1>PulseConnect Brand Design System</h1>
+    <p class="subtitle">The visual identity, UI language, and creative direction for the creator-brand marketplace</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Logo Section -->
+  <div class="section">
+    <h2>1. Logo</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">The PulseConnect logo is the primary brand mark. It should always be displayed prominently and with clear space around it.</p>
+    
+    <h3>Primary Logo (Dark Background)</h3>
+    <div class="logo-preview" style="background:#0a0a0f;">
+      <img src="assets/pulseconnect-logo.png" alt="PulseConnect Logo Dark">
+    </div>
+    
+    <h3>Light Variant (Light Background)</h3>
+    <div class="logo-preview" style="background:#f8fafc;">
+      <img src="assets/pulseconnect-logo-light.png" alt="PulseConnect Logo Light" style="filter: invert(1) hue-rotate(180deg);">
+    </div>
+
+    <div class="font-meta" style="margin-top:1rem;">
+      <code><strong>Logo Usage:</strong> Always use the dark background variant on dark surfaces and the light variant on light surfaces. Minimum clear space = 1x the height of the "P" in PulseConnect. Minimum size: 32px height for digital, 0.5" for print.</code>
+    </div>
+  </div>
+
+  <!-- Color Palette -->
+  <div class="section">
+    <h2>2. Color Palette</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">PulseConnect's identity lives at the intersection of electric energy (purple) and clear communication (cyan). The palette is designed to feel premium, modern, and platform-native.</p>
+
+    <h3>Primary Colors</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#7C3AED;">
+          <span class="label">#7C3AED</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Electric Violet</div>
+          <div class="hex">#7C3AED</div>
+          <div class="usage">Primary brand color · CTAs · Links · Active states</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#6D28D9;">
+          <span class="label">#6D28D9</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Deep Violet</div>
+          <div class="hex">#6D28D9</div>
+          <div class="usage">Hover states · Shadows · Depth</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#06B6D4;">
+          <span class="label">#06B6D4</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Cyan Pulse</div>
+          <div class="hex">#06B6D4</div>
+          <div class="usage">Accent · Secondary CTAs · Highlights · Badges</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0891B2;">
+          <span class="label">#0891B2</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Deep Cyan</div>
+          <div class="hex">#0891B2</div>
+          <div class="usage">Hover for cyan elements</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Gradient</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:linear-gradient(135deg, #7C3AED, #06B6D4);">
+          <span class="label">Primary Gradient</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Violet → Cyan</div>
+          <div class="hex">135°</div>
+          <div class="usage">Hero sections · CTA buttons · Logo · Featured cards</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:linear-gradient(135deg, #7C3AED, #6D28D9);">
+          <span class="label">Deep Gradient</span>
+        </div>
+        <div class="swatch-info">
+          <div class="name">Violet → Deep Violet</div>
+          <div class="hex">135°</div>
+          <div class="usage">Footer · Dark sections</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Neutral / Surface Colors</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0a0a0f;">
+          <span class="label">#0A0A0F</span>
+        </div>
+        <div class="swatch-info"><div class="name">Deep Space</div><div class="hex">#0A0A0F</div><div class="usage">Primary background</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#13131f;">
+          <span class="label">#13131F</span>
+        </div>
+        <div class="swatch-info"><div class="name">Surface</div><div class="hex">#13131F</div><div class="usage">Card backgrounds · Sidebars</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1e1e2e;">
+          <span class="label">#1E1E2E</span>
+        </div>
+        <div class="swatch-info"><div class="name">Surface Elevated</div><div class="hex">#1E1E2E</div><div class="usage">Elevated cards · Modals</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f8fafc;">
+          <span class="label">#F8FAFC</span>
+        </div>
+        <div class="swatch-info"><div class="name">Light Background</div><div class="hex">#F8FAFC</div><div class="usage">Light mode background (optional)</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#e2e8f0;">
+          <span class="label">#E2E8F0</span>
+        </div>
+        <div class="swatch-info"><div class="name">Light Surface</div><div class="hex">#E2E8F0</div><div class="usage">Light mode card surfaces</div></div>
+      </div>
+    </div>
+
+    <h3>Semantic Colors</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#10B981;">
+          <span class="label">#10B981</span>
+        </div>
+        <div class="swatch-info"><div class="name">Emerald</div><div class="hex">#10B981</div><div class="usage">Success · Verified · Deal completed</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F59E0B;">
+          <span class="label">#F59E0B</span>
+        </div>
+        <div class="swatch-info"><div class="name">Amber</div><div class="hex">#F59E0B</div><div class="usage">Warning · pending · in-review</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#EF4444;">
+          <span class="label">#EF4444</span>
+        </div>
+        <div class="swatch-info"><div class="name">Red</div><div class="hex">#EF4444</div><div class="usage">Error · Decline · Urgent</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <h2>3. Typography</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">Clean, modern, and highly readable. Inter serves as the primary typeface with JetBrains Mono for code and data.</p>
+
+    <h3>Primary Font: Inter</h3>
+    <div class="font-meta">
+      <code>Family: 'Inter', sans-serif · Weights: 300, 400, 500, 600, 700, 800, 900</code>
+    </div>
+    <div class="font-sample">
+      <div class="sample-h1" style="font-family:'Inter';">Display Heading (800) — 2.5rem / 40px</div>
+      <div class="label">H1 · Font-weight 800 · Font-size 2.5rem</div>
+    </div>
+    <div class="font-sample">
+      <div class="sample-h2" style="font-family:'Inter';">Section Heading (700) — 2rem / 32px</div>
+      <div class="label">H2 · Font-weight 700 · Font-size 2rem</div>
+    </div>
+    <div class="font-sample">
+      <div class="sample-h3" style="font-family:'Inter';">Card Title (600) — 1.5rem / 24px</div>
+      <div class="label">H3 · Font-weight 600 · Font-size 1.5rem</div>
+    </div>
+    <div class="font-sample">
+      <div class="sample-body" style="font-family:'Inter';">Body text — The standard for all paragraph content across PulseConnect. Clean, legible, and highly readable at any size. Designed for long-form reading on screens.</div>
+      <div class="label">Body · Font-weight 400 · Font-size 1rem (16px) · Line-height 1.6</div>
+    </div>
+    <div class="font-sample">
+      <div class="sample-small" style="font-family:'Inter';">Caption / Meta text — Used for timestamps, labels, and secondary information.</div>
+      <div class="label">Small · Font-weight 400 · Font-size 0.8rem (14px) · Color #94a3b8</div>
+    </div>
+
+    <h3 style="margin-top:2rem;">Monospace: JetBrains Mono</h3>
+    <div class="font-meta">
+      <code>Family: 'JetBrains Mono', monospace · Weights: 400, 500</code>
+    </div>
+    <div class="font-sample">
+      <div style="font-family:'JetBrains Mono'; font-size:0.9rem; background:rgba(255,255,255,0.04); padding:0.75rem; border-radius:8px;">
+        $ pulseconnect --connect creator=@jordan "Deal: sponsored post"<br>
+        → Match confirmed · Escrow funded · Contract signed
+      </div>
+      <div class="label">Code · Stats · Data displays · Currency amounts</div>
+    </div>
+  </div>
+
+  <!-- UI Components -->
+  <div class="section">
+    <h2>4. UI Component System</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">All UI components follow a dark-first design ethos with subtle borders, generous border-radius, and gradient accents.</p>
+
+    <h3>Buttons</h3>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin:1rem 0;">
+      <button class="btn btn-primary">Connect →</button>
+      <button class="btn btn-secondary">Browse Creators</button>
+      <button class="btn btn-ghost">Learn More</button>
+      <button class="btn btn-cta">Get Started Free</button>
+    </div>
+    <div class="font-meta">
+      <code>.btn-primary (gradient) · .btn-secondary (outlined purple) · .btn-ghost (outlined white/low) · .btn-cta (large hero CTA with shadow)</code>
+    </div>
+
+    <h3>Form Elements</h3>
+    <div style="max-width:400px; margin:1rem 0;">
+      <label style="display:block; font-size:0.85rem; color:#94a3b8; margin-bottom:0.5rem;">Email Address</label>
+      <input type="email" class="input-field" placeholder="you@company.com" value="">
+      <div style="margin-top:0.5rem; font-size:0.78rem; color:#64748b;">We'll never share your email.</div>
+    </div>
+
+    <h3>Pills / Tags</h3>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin:1rem 0;">
+      <span class="pill pill-purple">✨ Creator</span>
+      <span class="pill pill-cyan">📸 Photography</span>
+      <span class="pill pill-amber">🔥 Trending</span>
+      <span class="pill pill-purple">✅ Verified</span>
+      <span class="pill" style="background:rgba(16,185,129,0.15); color:#6ee7b7;">💼 Brand Deal</span>
+    </div>
+
+    <h3>Avatars</h3>
+    <div style="display:flex; gap:1rem; align-items:center; margin:1rem 0;">
+      <div class="avatar avatar-sm">J</div>
+      <div class="avatar">A</div>
+      <div class="avatar avatar-lg">P</div>
+      <div style="display:flex;">
+        <div class="avatar avatar-sm" style="margin-right:-8px;">M</div>
+        <div class="avatar avatar-sm" style="margin-right:-8px;">K</div>
+        <div class="avatar avatar-sm">R</div>
+      </div>
+    </div>
+
+    <h3>Cards</h3>
+    <div class="ui-grid">
+      <div class="ui-card">
+        <div class="avatar" style="margin-bottom:0.75rem;">C</div>
+        <div class="title">Creator Profile Card</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">@creatorname · 12.4K followers</div>
+        <div style="display:flex; gap:0.35rem; margin-top:0.5rem; flex-wrap:wrap;">
+          <span class="pill pill-cyan">Lifestyle</span>
+          <span class="pill pill-purple">Fashion</span>
+        </div>
+        <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+          <button class="btn btn-secondary" style="padding:0.4rem 1rem; font-size:0.8rem;">View Profile</button>
+          <button class="btn btn-primary" style="padding:0.4rem 1rem; font-size:0.8rem;">Connect</button>
+        </div>
+      </div>
+      <div class="ui-card">
+        <div style="font-size:1.5rem; margin-bottom:0.5rem;">🏢</div>
+        <div class="title">Company Card</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">Premium Brand · 12 campaigns</div>
+        <div style="margin-top:0.5rem;">
+          <span class="pill pill-amber">Full Access</span>
+        </div>
+        <div style="margin-top:0.75rem;">
+          <button class="btn btn-primary" style="padding:0.4rem 1rem; font-size:0.8rem;">Start Campaign</button>
+        </div>
+      </div>
+      <div class="ui-card">
+        <div style="font-size:1.5rem; margin-bottom:0.5rem;">💬</div>
+        <div class="title">DM Preview</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">From: @creator — "I'd love to work on this campaign!"</div>
+        <div style="margin-top:0.75rem; font-size:0.75rem; color:#64748b;">2 hours ago</div>
+        <div style="margin-top:0.5rem;">
+          <button class="btn btn-ghost" style="padding:0.4rem 1rem; font-size:0.8rem;">Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Screens / Mockups -->
+  <div class="section">
+    <h2>5. UI Screen Mockups</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">Key interface screens designed for the PulseConnect platform.</p>
+
+    <div class="mockup-grid">
+      <div class="mockup-card">
+        <img src="mockups/landing-page.png" alt="Landing Page Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">🏠 Landing Page</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          Hero with animated gradient · Value prop for both sides · Stats bar showing creators & brands · CTA to sign up · Feature highlights · Sponsor wall preview
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/creator-signup.png" alt="Creator Signup Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">🎨 Creator Signup Flow</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          Multi-step onboarding: social links, niche/tags, audience stats, profile photo, instant brand rep assignment (TGB Global), content toolkit access
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/company-signup.png" alt="Company Signup Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">🏢 Company Signup Flow</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          Tier selection (Logo / Access / Full Access) · Company profile setup · Payment method · Search preferences · Campaign goals
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/creator-profile.png" alt="Creator Profile Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">🌟 Creator Profile</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          Profile header with avatar, stats, bio · Brand rep badge (TGB Global) · Portfolio grid · Content style tags · Past campaign gallery · Custom theme applied
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/dm-interface.png" alt="DM Interface Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">💬 DM Interface</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          In-app messaging · Threaded conversations · Deal proposal cards · File/image sharing · Read receipts · Escrow & contract status indicator
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/sponsor-wall.png" alt="Sponsor Wall Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">📊 Sponsor Wall</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          For Logo Tier companies · Logo grid display · Impressions & engagement stats · Featured sponsors · Rotating spotlight
+        </div>
+      </div>
+      <div class="mockup-card">
+        <img src="mockups/customization-store.png" alt="Customization Store Mockup" onerror="this.style.display='none'">
+        <div class="mockup-label">🎨 Customization Store</div>
+        <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b;">
+          Profile themes · Font packs · Emoji sets · Custom profile frames · Premium badges · Featured creator free tier
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscription Tiers UI -->
+  <div class="section">
+    <h2>6. Subscription Tiers (UI Design)</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">Pricing card design for the three company tiers plus the free creator tier.</p>
+    
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1.5rem;">
+      <div class="tier-card">
+        <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#64748b; font-weight:600;">Logo</div>
+        <div class="price">$49</div>
+        <div class="price-note">/month</div>
+        <ul>
+          <li>Logo placement on Sponsor Wall</li>
+          <li>Brand exposure to creators</li>
+          <li>Monthly impressions report</li>
+          <li>Basic analytics</li>
+        </ul>
+        <button class="btn btn-secondary" style="width:100%; justify-content:center;">Get Started</button>
+      </div>
+      <div class="tier-card featured">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#a78bfa; font-weight:600;">Access</div>
+          <span class="pill pill-purple" style="font-size:0.7rem;">Most Popular</span>
+        </div>
+        <div class="price">$149</div>
+        <div class="price-note">/month</div>
+        <ul>
+          <li>Browse creator profiles</li>
+          <li>In-app DM messaging</li>
+          <li>Creator search & filters</li>
+          <li>Save favorites & shortlists</li>
+          <li>Campaign brief templates</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;">Get Started</button>
+      </div>
+      <div class="tier-card">
+        <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#64748b; font-weight:600;">Full Access</div>
+        <div class="price">$349</div>
+        <div class="price-note">/month</div>
+        <ul>
+          <li>Everything in Access</li>
+          <li>Facilitated contracts & escrow</li>
+          <li>Payment protection</li>
+          <li>Delivery tracking</li>
+          <li>Priority support</li>
+          <li>Featured listing for 30 days</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;">Get Started</button>
+      </div>
+    </div>
+
+    <div class="font-meta" style="margin-top:1.5rem;">
+      <code><strong>Creator Tier:</strong> Free forever · First brand deal on join · TGB Global rep status · Content toolkit · Affiliate engine access · Profile customization</code>
+    </div>
+  </div>
+
+  <!-- Profile Customization Themes -->
+  <div class="section">
+    <h2>7. Profile Customization Assets</h2>
+    <p style="color:#94a3b8;margin-bottom:1.5rem;">Premium themes, fonts, and emoji sets that creators can purchase or earn. Top influencers get select items free to drive adoption.</p>
+
+    <h3>Theme Packages</h3>
+    <div class="theme-grid">
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #0f0f1a, #1a0a2e); border:1px solid rgba(124,58,237,0.3);">
+        <div class="emoji">🌌</div>
+        <div class="tname">Nebula</div>
+        <div class="tdesc">Purple-cyan cosmic</div>
+        <div style="font-size:0.65rem; color:#a78bfa; margin-top:0.5rem;">$2.99</div>
+      </div>
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #0f172a, #1e293b); border:1px solid rgba(6,182,212,0.3);">
+        <div class="emoji">🌊</div>
+        <div class="tname">Deep Ocean</div>
+        <div class="tdesc">Blue-cyan depth</div>
+        <div style="font-size:0.65rem; color:#67e8f9; margin-top:0.5rem;">$2.99</div>
+      </div>
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #1a0a0a, #2d1a1a); border:1px solid rgba(239,68,68,0.3);">
+        <div class="emoji">🔥</div>
+        <div class="tname">Ember</div>
+        <div class="tdesc">Red-amber warm</div>
+        <div style="font-size:0.65rem; color:#fca5a5; margin-top:0.5rem;">$2.99</div>
+      </div>
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #052e16, #064e3b); border:1px solid rgba(16,185,129,0.3);">
+        <div class="emoji">🌿</div>
+        <div class="tname">Verdant</div>
+        <div class="tdesc">Green-emerald organic</div>
+        <div style="font-size:0.65rem; color:#6ee7b7; margin-top:0.5rem;">$2.99</div>
+      </div>
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #1a0533, #2d1a4e); border:1px solid rgba(192,132,252,0.3);">
+        <div class="emoji">💎</div>
+        <div class="tname">Royal</div>
+        <div class="tdesc">Purple-gold luxe</div>
+        <div style="font-size:0.65rem; color:#d8b4fe; margin-top:0.5rem;">$4.99</div>
+      </div>
+      <div class="theme-swatch" style="background: linear-gradient(135deg, #0a0a0f, #13131f); border:1px solid rgba(255,255,255,0.1);">
+        <div class="emoji">⚡</div>
+        <div class="tname">Pulse</div>
+        <div class="tdesc">Minimal dark signature</div>
+        <div style="font-size:0.65rem; color:#a78bfa; margin-top:0.5rem;">Free (featured)</div>
+      </div>
+    </div>
+
+    <h3>Font Packs</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1rem; margin-top:1rem;">
+      <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:Georgia, serif; font-size:1.5rem; font-weight:700; margin-bottom:0.5rem;">Aa</div>
+        <div style="font-size:0.85rem; font-weight:500;">Serif Display</div>
+        <div style="font-size:0.7rem; color:#64748b;">$1.99 · Elegant headings</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Inter', sans-serif; font-size:1.5rem; font-weight:800; letter-spacing:-1px; margin-bottom:0.5rem;">Aa</div>
+        <div style="font-size:0.85rem; font-weight:500;">Sans Bold</div>
+        <div style="font-size:0.7rem; color:#64748b;">$1.99 · Modern impact</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Courier New', monospace; font-size:1.5rem; font-weight:500; margin-bottom:0.5rem;">Aa</div>
+        <div style="font-size:0.85rem; font-weight:500;">Mono Tech</div>
+        <div style="font-size:0.7rem; color:#64748b;">$1.99 · Tech/developer aesthetic</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Brush Script MT', cursive; font-size:1.8rem; font-weight:400; margin-bottom:0.5rem;">Aa</div>
+        <div style="font-size:0.85rem; font-weight:500;">Script Hand</div>
+        <div style="font-size:0.7rem; color:#64748b;">$1.99 · Handwritten accent</div>
+      </div>
+    </div>
+
+    <h3>Emoji Sets</h3>
+    <div class="theme-grid" style="margin-top:1rem;">
+      <div class="theme-swatch" style="background:rgba(124,58,237,0.06);">
+        <div class="emoji">✨</div>
+        <div class="tname">Creator Kit</div>
+        <div class="tdesc">Camera · Sparkle · Mic · Star</div>
+        <div style="font-size:0.65rem; color:#a78bfa; margin-top:0.5rem;">$0.99</div>
+      </div>
+      <div class="theme-swatch" style="background:rgba(16,185,129,0.06);">
+        <div class="emoji">💰</div>
+        <div class="tname">Money Moves</div>
+        <div class="tdesc">Cash · Rocket · Chart · Bag</div>
+        <div style="font-size:0.65rem; color:#6ee7b7; margin-top:0.5rem;">$0.99</div>
+      </div>
+      <div class="theme-swatch" style="background:rgba(245,158,11,0.06);">
+        <div class="emoji">🔥</div>
+        <div class="tname">Trending</div>
+        <div class="tdesc">Fire · Graph up · Bell · Zap</div>
+        <div style="font-size:0.65rem; color:#fbbf24; margin-top:0.5rem;">$0.99</div>
+      </div>
+      <div class="theme-swatch" style="background:rgba(6,182,212,0.06);">
+        <div class="emoji">🤝</div>
+        <div class="tname">Brand Deals</div>
+        <div class="tdesc">Handshake · Contract · Check · Gem</div>
+        <div style="font-size:0.65rem; color:#67e8f9; margin-top:0.5rem;">$0.99</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand Voice & Tone -->
+  <div class="section">
+    <h2>8. Brand Voice & Tone</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:1.5rem;">
+      <div style="background:rgba(124,58,237,0.06); border-radius:12px; padding:1.5rem; border:1px solid rgba(124,58,237,0.15);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🎯</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">Direct & Confident</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">No fluff. State the value clearly. "Get your first brand deal the moment you join."</div>
+      </div>
+      <div style="background:rgba(6,182,212,0.06); border-radius:12px; padding:1.5rem; border:1px solid rgba(6,182,212,0.15);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🤝</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">Two-Sided Empathy</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">Speak to both creators and brands. Each message should resonate with both audiences.</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.06); border-radius:12px; padding:1.5rem; border:1px solid rgba(245,158,11,0.15);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">⚡</div>
+        <div style="font-weight:700; margin-bottom:0.5rem;">Energetic & Modern</div>
+        <div style="font-size:0.85rem; color:#94a3b8;">Fast-paced, youthful energy. PulseConnect is about momentum and opportunity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Design Tokens -->
+  <div class="section">
+    <h2>9. Design Tokens (CSS Variables)</h2>
+    <div class="font-meta">
+      <code>
+        --color-primary: #7C3AED;<br>
+        --color-primary-hover: #6D28D9;<br>
+        --color-accent: #06B6D4;<br>
+        --color-accent-hover: #0891B2;<br>
+        --color-gradient: linear-gradient(135deg, #7C3AED, #06B6D4);<br>
+        --color-bg: #0a0a0f;<br>
+        --color-surface: #13131f;<br>
+        --color-surface-elevated: #1e1e2e;<br>
+        --color-text: #e2e8f0;<br>
+        --color-text-secondary: #94a3b8;<br>
+        --color-text-muted: #64748b;<br>
+        --color-success: #10B981;<br>
+        --color-warning: #F59E0B;<br>
+        --color-error: #EF4444;<br>
+        --font-sans: 'Inter', sans-serif;<br>
+        --font-mono: 'JetBrains Mono', monospace;<br>
+        --radius-sm: 6px;<br>
+        --radius-md: 8px;<br>
+        --radius-lg: 12px;<br>
+        --radius-xl: 16px;<br>
+        --shadow-glow: 0 0 20px rgba(124,58,237,0.3);
+      </code>
+    </div>
+  </div>
+
+  <!-- Visual Style Summary -->
+  <div class="section">
+    <h2>10. Visual Style Summary</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;">
+      <div>
+        <h4>Dark-First Design</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">Deep space backgrounds (#0a0a0f) with elevated surfaces. Light mode is secondary and optional.</p>
+      </div>
+      <div>
+        <h4>Gradient Accents</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">Violet → Cyan gradients used for primary CTAs, hero sections, and important UI elements.</p>
+      </div>
+      <div>
+        <h4>Subtle Borders</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">Low-opacity white borders (rgba(255,255,255,0.06-0.1)) define surfaces without being harsh.</p>
+      </div>
+      <div>
+        <h4>Generous Border Radius</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">12px for cards, 8px for buttons/inputs, 16px for sections. Soft, approachable, modern.</p>
+      </div>
+      <div>
+        <h4>Monochromatic Data</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">Charts, stats, and data displays use mono cyan/purple tones rather than full rainbow.</p>
+      </div>
+      <div>
+        <h4>Glow Effects</h4>
+        <p style="font-size:0.85rem; color:#94a3b8;">CTAs and active elements have subtle purple glow shadows for depth and emphasis.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    PulseConnect Brand Design System v1.0 · © 2026 TGB Global Systems LLC · Designed for PulseConnect by the Designer team
+  </footer>
+
+</div>
+</body>
+</html>

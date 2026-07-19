@@ -1,0 +1,105 @@
+/* PulseConnect Design Tokens
+   Import into your CSS/Tailwind config
+   Version: 1.0
+   Source: BRAND_GUIDE.html
+*/
+
+:root {
+  /* ── Primary Colors ── */
+  --pc-primary: #7C3AED;
+  --pc-primary-hover: #6D28D9;
+  --pc-primary-light: #a78bfa;
+  --pc-primary-dark: #5B21B6;
+  
+  /* ── Accent Colors ── */
+  --pc-accent: #06B6D4;
+  --pc-accent-hover: #0891B2;
+  --pc-accent-light: #67e8f9;
+  
+  /* ── Gradients ── */
+  --pc-gradient-primary: linear-gradient(135deg, #7C3AED, #06B6D4);
+  --pc-gradient-deep: linear-gradient(135deg, #7C3AED, #6D28D9);
+  --pc-gradient-cyan: linear-gradient(135deg, #06B6D4, #0891B2);
+  
+  /* ── Neutral / Surface ── */
+  --pc-bg: #0a0a0f;
+  --pc-surface: #13131f;
+  --pc-surface-elevated: #1e1e2e;
+  --pc-surface-hover: #252538;
+  --pc-border: rgba(255, 255, 255, 0.06);
+  --pc-border-strong: rgba(255, 255, 255, 0.1);
+  --pc-border-accent: rgba(124, 58, 237, 0.3);
+  
+  /* ── Light Mode (Optional) ── */
+  --pc-bg-light: #f8fafc;
+  --pc-surface-light: #e2e8f0;
+  --pc-border-light: rgba(0, 0, 0, 0.08);
+  
+  /* ── Text ── */
+  --pc-text: #e2e8f0;
+  --pc-text-secondary: #94a3b8;
+  --pc-text-muted: #64748b;
+  --pc-text-bright: #f1f5f9;
+  
+  /* ── Semantic ── */
+  --pc-success: #10B981;
+  --pc-success-bg: rgba(16, 185, 129, 0.15);
+  --pc-warning: #F59E0B;
+  --pc-warning-bg: rgba(245, 158, 11, 0.15);
+  --pc-error: #EF4444;
+  --pc-error-bg: rgba(239, 68, 68, 0.15);
+  --pc-info: #06B6D4;
+  --pc-info-bg: rgba(6, 182, 212, 0.15);
+  
+  /* ── Typography ── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* ── Spacing (4px grid) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  
+  /* ── Border Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(124, 58, 237, 0.3);
+  --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.2);
+  
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+}
+
+/* ── Tailwind v4 Compatible (optional preset) ── */
+@theme {
+  --color-primary: #7C3AED;
+  --color-primary-hover: #6D28D9;
+  --color-accent: #06B6D4;
+  --color-accent-hover: #0891B2;
+  --color-bg: #0a0a0f;
+  --color-surface: #13131f;
+  --color-surface-elevated: #1e1e2e;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
