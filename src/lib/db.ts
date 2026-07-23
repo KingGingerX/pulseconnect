@@ -174,6 +174,17 @@ function migrate(database: Database) {
       commission_rate REAL DEFAULT 0.1,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS boosts (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      boost_level TEXT NOT NULL CHECK(boost_level IN ('standard', 'premium')),
+      starts_at TEXT NOT NULL DEFAULT (datetime('now')),
+      expires_at TEXT NOT NULL,
+      stripe_payment_id TEXT DEFAULT '',
+      active INTEGER DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 }
 

@@ -41,29 +41,39 @@ const loadCustomizationStore = createServerFn({ method: "GET" }).handler(
  { id: uuid(), type: "emoji", name: "Nature Pack", desc: "🌸 🌺 🌻 🌹 🌷", price: 199 },
  { id: uuid(), type: "emoji", name: "Gaming Pack", desc: "🎮 🕹️ 👾 🎯 🏆", price: 299 },
  { id: uuid(), type: "emoji", name: "Premium Sparkle", desc: "✨ 🌟 💎 👑 🔥", price: 499 },
- ];
+       // Boosts
+       { id: uuid(), type: "boost", name: "Standard Boost - 7 days", desc: "Featured at the top for 7 days", price: 499 },
+       { id: uuid(), type: "boost", name: "Premium Boost - 14 days", desc: "Premium featured placement for 14 days", price: 899 },
+     ];
 
- for (const item of items) {
- database.run(
- "INSERT INTO customization_items (id, item_type, name, description, price) VALUES (?, ?, ?, ?, ?)",
- [item.id, item.type, item.name, item.desc, item.price],
- );
- }
- }
+     for (const item of items) {
+     database.run(
+     "INSERT INTO customization_items (id, item_type, name, description, price) VALUES (?, ?, ?, ?, ?)",
+     [item.id, item.type, item.name, item.desc, item.price],
+     );
+     }
+     }
 
- const items = database
- .query(
- "SELECT * FROM customization_items WHERE available = 1 ORDER BY item_type, price ASC",
- )
- .all() as Record<string, unknown>[];
+     const items = database
+     .query(
+     "SELECT * FROM customization_items WHERE available = 1 ORDER BY item_type, price ASC",
+     )
+     .all() as Record<string, unknown>[];
 
- const purchasedItems = database
- .query("SELECT item_id FROM user_customizations WHERE user_id = ?")
- .all(user.id) as { item_id: string }[];
+     const purchasedItems = database
+     .query("SELECT item_id FROM user_customizations WHERE user_id = ?")
+     .all(user.id) as { item_id: string }[];
 
- const purchasedIds = new Set(purchasedItems.map((p) => p.item_id));
+     const purchasedIds = new Set(purchasedItems.map((p) => p.item_id));
 
- return { user, profile, items, purchasedIds: [...purchasedIds] };
+     // Check active boosts
+     const activeBoost = database
+     .query(
+     "SELECT * FROM boosts WHERE user_id = ? AND active = 1 AND expires_at > datetime('now') ORDER BY expires_at DESC LIMIT 1",
+     )
+     .get(user.id) as Record<string, unknown> | undefined;
+
+     return { user, profile, items, purchasedIds: [...purchasedIds], activeBoost };
  },
 );
 
@@ -134,21 +144,31 @@ const purchaseItemAction = createServerFn({ method: "POST" }).handler(
  user.id,
  ]);
  } else if (item.item_type === "emoji") {
- const profile = database
- .query("SELECT emojis FROM creator_profiles WHERE user_id = ?")
- .get(user.id) as { emojis: string } | undefined;
+     const profile = database
+     .query("SELECT emojis FROM creator_profiles WHERE user_id = ?")
+     .get(user.id) as { emojis: string } | undefined;
 
- const existing = profile?.emojis ? JSON.parse(String(profile.emojis)) : [];
- const newEmojis = (item.description as string)
- .split(" ")
- .filter((e) => e.trim());
+     const existing = profile?.emojis ? JSON.parse(String(profile.emojis)) : [];
+     const newEmojis = (item.description as string)
+     .split(" ")
+     .filter((e) => e.trim());
 
- const merged = [...new Set([...existing, ...newEmojis])].slice(0, 10);
- database.run("UPDATE creator_profiles SET emojis = ? WHERE user_id = ?", [
- JSON.stringify(merged),
- user.id,
- ]);
- }
+     const merged = [...new Set([...existing, ...newEmojis])].slice(0, 10);
+     database.run("UPDATE creator_profiles SET emojis = ? WHERE user_id = ?", [
+     JSON.stringify(merged),
+     user.id,
+     ]);
+     } else if (item.item_type === "boost") {
+     // Handle boost purchase — insert into boosts table
+     const days = item.name === "boost-premium" ? 14 : 7;
+     const expiresAt = new Date(
+     Date.now() + days * 24 * 60 * 60 * 1000,
+     ).toISOString();
+     database.run(
+     "INSERT INTO boosts (id, user_id, boost_level, expires_at) VALUES (?, ?, ?, ?)",
+     [uuid(), user.id, item.name === "boost-premium" ? "premium" : "standard", expiresAt],
+     );
+     }
 
  const paidCount = (
  database
@@ -178,11 +198,11 @@ export const Route = createFileRoute("/customize")({
 });
 
 function CustomizePage() {
- const { user, profile, items, purchasedIds } = Route.useLoaderData();
+  const { user, profile, items, purchasedIds, activeBoost } = Route.useLoaderData();
 
- const themes = items.filter((i) => i.item_type === "theme");
- const fonts = items.filter((i) => i.item_type === "font");
- const emojiPacks = items.filter((i) => i.item_type === "emoji");
+  const themes = items.filter((i) => i.item_type === "theme");
+  const fonts = items.filter((i) => i.item_type === "font");
+  const emojiPacks = items.filter((i) => i.item_type === "emoji");
 
  const handlePurchase = async (itemId: string) => {
      const formData = new FormData();
@@ -449,13 +469,108 @@ function CustomizePage() {
  </button>
  )}
  </div>
- </div>
- );
- })}
- </div>
- </section>
+           </div>
+           );
+         })}
+         </div>
+         </section>
 
- {profile && (profile.customization_level as string) === "premium" && (
+         {/* Profile Boosts */}
+         <section className="mb-8">
+         <h2 className="text-lg font-bold">Profile Boosts</h2>
+         <p className="mb-4 text-sm text-text-secondary">
+           Get featured at the top of the creator directory! Boost your profile
+           for maximum visibility to brands.
+         </p>
+         <div className="grid gap-4 sm:grid-cols-2">
+           {[
+             {
+               id: "boost-standard",
+               name: "Standard Boost",
+               desc: "Featured at the top for 7 days",
+               price: 499,
+               days: 7,
+               badge: "🔥 Featured",
+               popular: false,
+             },
+             {
+               id: "boost-premium",
+               name: "Premium Boost",
+               desc: "Premium featured placement for 14 days",
+               price: 899,
+               days: 14,
+               badge: "🌟 Premium Featured",
+               popular: true,
+             },
+           ].map((boost) => (
+             <div
+               key={boost.id}
+               className={`rounded-xl border-2 p-5 ${
+                 boost.popular
+                   ? "border-primary bg-primary/5"
+                   : "border-border-subtle bg-surface"
+               }`}
+             >
+               <div className="flex items-start justify-between">
+                 <div>
+                   <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-medium text-accent-light">
+                     {boost.badge}
+                   </span>
+                   <h3 className="mt-2 text-lg font-bold">{boost.name}</h3>
+                   <p className="mt-1 text-sm text-text-secondary">
+                     {boost.desc}
+                   </p>
+                   <div className="mt-2">
+                     <span className="text-2xl font-extrabold">
+                       ${(boost.price / 100).toFixed(2)}
+                     </span>
+                     <span className="text-text-muted text-sm">
+                       {" "}
+                       · {boost.days} days
+                     </span>
+                   </div>
+                 </div>
+               </div>
+               <button
+                 onClick={() => handlePurchase(boost.id)}
+                 className={`mt-4 w-full rounded-lg py-2.5 text-sm font-semibold transition ${
+                   boost.popular
+                     ? "bg-accent text-white hover:bg-accent-hover"
+                     : "border border-border-strong bg-surface-elevated text-text-bright hover:bg-surface-hover"
+                 }`}
+               >
+                 Boost My Profile
+               </button>
+             </div>
+           ))}
+         </div>
+         </section>
+
+                 {activeBoost && (
+                 <div className="mb-8 rounded-2xl border border-accent/30 bg-accent/5 p-6">
+                   <div className="flex items-start justify-between">
+                     <div>
+                       <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent-light">
+                         Active Boost
+                       </span>
+                       <h3 className="mt-2 text-lg font-bold">
+                         🔥{" "}
+                         {activeBoost.boost_level === "premium"
+                           ? "Premium Featured"
+                           : "Featured"}
+                       </h3>
+                       <p className="mt-1 text-sm text-text-secondary">
+                         Your profile is boosted until{" "}
+                         {new Date(
+                           activeBoost.expires_at as string,
+                         ).toLocaleDateString()}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+                 )}
+
+                 {profile && (profile.customization_level as string) === "premium" && (
  <div className="rounded-2xl bg-gradient-to-r from-warning to-warning p-6 text-white">
  <h3 className="text-lg font-bold">✨ Premium Profile</h3>
  <p className="mt-1 text-sm text-white/80">

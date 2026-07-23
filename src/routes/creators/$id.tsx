@@ -49,7 +49,13 @@ const loadCreatorProfile = createServerFn({ method: "GET" }).handler(
  )
  .get(user.id, creatorId, creatorId, user.id) as { id: string } | undefined;
 
- return { user, creator, customizations, existingConvoId: existingConvo?.id ?? null };
+ const activeBoost = database
+ .query(
+ "SELECT boost_level, expires_at FROM boosts WHERE user_id = ? AND active = 1 AND expires_at > datetime('now') ORDER BY expires_at DESC LIMIT 1",
+ )
+ .get(creatorId) as Record<string, unknown> | undefined;
+
+ return { user, creator, customizations, existingConvoId: existingConvo?.id ?? null, activeBoost };
  },
 );
 
@@ -113,7 +119,7 @@ export const Route = createFileRoute("/creators/$id")({
 });
 
 function CreatorProfile() {
- const { user, creator, customizations, existingConvoId } = Route.useLoaderData();
+ const { user, creator, customizations, existingConvoId, activeBoost } = Route.useLoaderData();
  const [message, setMessage] = useState("");
  const [sending, setSending] = useState(false);
  const navigate = useNavigate();
@@ -224,6 +230,11 @@ function CreatorProfile() {
  Premium Profile
  </span>
  )}
+            {activeBoost && (
+            <span className="rounded-full bg-gradient-to-r from-accent to-accent-hover px-3 py-1 text-xs font-semibold text-white shadow-glow-cyan">
+              🔥 {activeBoost.boost_level === "premium" ? "Premium Featured" : "Featured"}
+            </span>
+            )}
  </div>
  </div>
  </div>

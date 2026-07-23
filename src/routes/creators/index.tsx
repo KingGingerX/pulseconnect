@@ -15,11 +15,16 @@ const loadCreators = createServerFn({ method: "GET" }).handler(
  .query(
  `SELECT u.id, u.name, u.email, cp.display_name, cp.bio, cp.avatar_url,
  cp.niche, cp.theme, cp.font, cp.is_tgb_affiliate,
+ b.id as boost_id, b.boost_level, b.expires_at as boost_expires_at,
  (SELECT COUNT(*) FROM messages WHERE receiver_id = u.id AND read = 0) as unread_messages
  FROM users u
  JOIN creator_profiles cp ON cp.user_id = u.id
+ LEFT JOIN boosts b ON b.user_id = u.id AND b.active = 1 AND b.expires_at > datetime('now')
  WHERE u.user_type = 'creator'
- ORDER BY u.created_at DESC`,
+ ORDER BY
+ CASE WHEN b.id IS NOT NULL THEN 0 ELSE 1 END,
+ b.expires_at ASC,
+ u.created_at DESC`,
  )
  .all() as Record<string, unknown>[];
 
@@ -125,10 +130,15 @@ function CreatorsPage() {
  {(creator.bio as string) || "No bio yet."}
  </p>
  {creator.is_tgb_affiliate === 1 && (
- <span className="mt-2 inline-block rounded-full bg-primary/15 px-2 py-0.5 text-xs text-primary-light ">
- TGB Affiliate
- </span>
- )}
+             <span className="mt-2 inline-block rounded-full bg-primary/15 px-2 py-0.5 text-xs text-primary-light">
+               TGB Affiliate
+             </span>
+             )}
+             {creator.boost_id && (
+             <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-accent to-accent-hover px-2.5 py-0.5 text-xs font-semibold text-white shadow-glow-cyan">
+               🔥 {creator.boost_level === "premium" ? "Premium Featured" : "Featured"}
+             </span>
+             )}
  </div>
  </div>
  </Link>

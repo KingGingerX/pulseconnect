@@ -102,6 +102,9 @@ export const MICRO_TRANSACTION_PRODUCTS = [
   { id: "emoji-nature", type: "emoji", name: "Nature Pack", amount: 199, description: "🌸 🌺 🌻 🌹 🌷" },
   { id: "emoji-gaming", type: "emoji", name: "Gaming Pack", amount: 299, description: "🎮 🕹️ 👾 🎯 🏆" },
   { id: "emoji-premium", type: "emoji", name: "Premium Sparkle", amount: 499, description: "✨ 🌟 💎 👑 🔥" },
+  // Profile boosts
+  { id: "boost-standard", type: "boost", name: "Standard Boost - 7 days", amount: 499, description: "Profile featured at top for 7 days" },
+  { id: "boost-premium", type: "boost", name: "Premium Boost - 14 days", amount: 899, description: "Premium featured placement for 14 days" },
 ] as const;
 
 // ─── Price ID Resolution ──────────────────────────────────────────────────
@@ -256,70 +259,103 @@ export async function parseWebhookEvent(
   }
 }
 
+export interface WebhookAction {
+  type: "grant_micro_transaction" | "activate_subscription" | "update_subscription" | "cancel_subscription" | "log";
+  userId: string;
+  itemId?: string;
+  itemType?: string;
+  tier?: string;
+  stripeSubscriptionId?: string;
+  stripePaymentIntent?: string;
+  status?: string;
+  message?: string;
+}
+
 /**
- * Handle a Stripe webhook event and return DB actions to perform.
+ * Handle a Stripe webhook event and return structured DB actions to perform.
  */
 export async function handleWebhookEvent(
   event: Record<string, unknown>,
-): Promise<{ actions: string[] }> {
-  const actions: string[] = [];
+): Promise<{ actions: WebhookAction[] }> {
+  const actions: WebhookAction[] = [];
   const type = event.type as string;
   const data = event.data as Record<string, unknown>;
 
   switch (type) {
     case "checkout.session.completed": {
       const session = data;
-      const userId = session.user_id as string;
-      const tier = session.price_lookup_key as string;
+      const metadata = (session.metadata as Record<string, string>) || {};
+      const userId = metadata.user_id;
+      const priceLookupKey = metadata.price_lookup_key;
       const mode = session.mode as string;
 
-      if (mode === "subscription" && userId && tier) {
-        actions.push(
-          `Activate subscription: user=${userId}, tier=${tier}, stripeSubscriptionId=${session.subscription}`,
-        );
+      if (mode === "subscription" && userId && priceLookupKey) {
+        actions.push({
+          type: "activate_subscription",
+          userId,
+          tier: priceLookupKey,
+          stripeSubscriptionId: session.subscription as string,
+        });
       }
-      if (mode === "payment" && userId && tier) {
-        actions.push(
-          `Grant micro-transaction: user=${userId}, item=${tier}, stripePaymentIntent=${session.payment_intent}`,
-        );
+      if (mode === "payment" && userId && priceLookupKey) {
+        actions.push({
+          type: "grant_micro_transaction",
+          userId,
+          itemId: priceLookupKey,
+          stripePaymentIntent: session.payment_intent as string,
+        });
       }
       break;
     }
 
     case "customer.subscription.updated": {
       const sub = data;
-      actions.push(
-        `Subscription updated: user=${sub.metadata?.user_id}, tier=${sub.metadata?.tier}, status=${sub.status}`,
-      );
+      const meta = (sub.metadata as Record<string, string>) || {};
+      actions.push({
+        type: "update_subscription",
+        userId: meta.user_id,
+        tier: meta.tier,
+        status: sub.status as string,
+      });
       break;
     }
 
     case "customer.subscription.deleted": {
       const delSub = data;
-      actions.push(
-        `Subscription cancelled: user=${(delSub.metadata as Record<string, string>)?.user_id}`,
-      );
+      const delMeta = (delSub.metadata as Record<string, string>) || {};
+      actions.push({
+        type: "cancel_subscription",
+        userId: delMeta.user_id,
+      });
       break;
     }
 
     case "invoice.paid": {
       const invoice = data;
-      actions.push(
-        `Invoice paid: ${invoice.id}, amount=${invoice.amount_paid}`,
-      );
+      actions.push({
+        type: "log",
+        userId: "",
+        message: `Invoice paid: ${invoice.id}, amount=${invoice.amount_paid}`,
+      });
       break;
     }
 
     case "invoice.payment_failed": {
       const failInv = data;
-      actions.push(
-        `Invoice payment FAILED: ${failInv.id}, attempt=${failInv.attempt_count}`,
-      );
+      actions.push({
+        type: "log",
+        userId: "",
+        message: `Invoice payment FAILED: ${failInv.id}, attempt=${failInv.attempt_count}`,
+      });
       break;
     }
 
     default:
-      actions.push(`Unhandled event type: ${type}`);
+      actions.push({
+        type: "log",
+        userId: "",
+        message: `Unhandled event type: ${type}`,
+      });
   }
 
   return { actions };
