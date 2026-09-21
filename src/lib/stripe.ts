@@ -34,7 +34,7 @@ async function createStripeInstance() {
         "for subscription billing. Contact the team lead.",
     );
   }
-  return new Stripe(key, { apiVersion: "2025-02-24" });
+  return new Stripe(key);
 }
 
 async function getStripe() {
